@@ -1,0 +1,14 @@
+scanner-autoloads.el
+scanner-pkg.el
+*~undo-tree~
+*~
+\#*#
+*.elc
+TAGS
+/dep
+*.log
+*.jpeg
+*.jpg
+*.png
+*.pdf
+*.txt
