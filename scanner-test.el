@@ -5,7 +5,7 @@
 ;; Author: Raffael Stocker <r.stocker@mnet-mail.de>
 ;; Maintainer: Raffael Stocker <r.stocker@mnet-mail.de>
 ;; Created: 05. Feb 2020
-;; Version: 0.1
+;; Version: 0.2
 ;; Package-Requires: ((emacs "25.1") (dash "2.12.0"))
 ;; Keywords: hardware, multimedia
 ;; URL: https://gitlab.com/rstocker/scanner.git
@@ -141,17 +141,24 @@
 	(scanner-tesseract-languages '("eng" "deu"))
 	(scanner-tesseract-switches '("--opt1" "--opt2"))
 	(scanner-tesseract-outputs '("out1" "out2"))
+	(scanner-tessdata-dir "/usr/share/tessdata/")
 	(-compare-fn #'string=))
     (should (-is-infix-p '("-l" "eng+deu") (scanner--tesseract-args "infile"
 								    "outfile")))
-    (should (-is-infix-p '("--dpi" "300") (scanner--tesseract-args "infile"
-								   "outfile")))
+    (let ((scanner--tesseract-v4 "0"))
+      (should (-is-infix-p '("--dpi" "300") (scanner--tesseract-args "infile"
+								     "outfile"))))
+    (let ((scanner--tesseract-v4 "1000"))
+      (should-not (-is-infix-p '("--dpi" "300") (scanner--tesseract-args "infile"
+									 "outfile"))))
     (should (-contains-p (scanner--tesseract-args "infile" "outfile") "--opt1"))
     (should (-contains-p (scanner--tesseract-args "infile" "outfile") "--opt2"))
     (should (-contains-p (scanner--tesseract-args "infile" "outfile") "infile"))
     (should (-contains-p (scanner--tesseract-args "infile" "outfile") "outfile"))
     (should (-contains-p (scanner--tesseract-args "infile" "outfile") "out1"))
-    (should (-contains-p (scanner--tesseract-args "infile" "outfile") "out2"))))
+    (should (-contains-p (scanner--tesseract-args "infile" "outfile") "out2"))
+    (should (-is-infix-p '("--tessdata-dir" "/usr/share/tessdata/")
+			 (scanner--tesseract-args "infile" "outfile")))))
 
 ;; Note: interactive commands are only tested for their non-interactive
 ;; behavior
